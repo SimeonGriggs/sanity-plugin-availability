@@ -1,6 +1,6 @@
-import {defineField, Rule} from 'sanity'
+import {defineField} from 'sanity'
 
-import {hoursOfTheDay} from '../helpers/data'
+import {HOURS_OF_THE_DAY} from '../helpers/data'
 import {AvailabilityTime} from '../helpers/types'
 
 export default defineField({
@@ -8,19 +8,19 @@ export default defineField({
   type: 'object',
   options: {columns: 2},
   initialValue: {
-    from: hoursOfTheDay[36], // 9:00 AM
-    to: hoursOfTheDay[68], // 5:00 PM
+    from: HOURS_OF_THE_DAY[36], // 9:00 AM
+    to: HOURS_OF_THE_DAY[68], // 5:00 PM
   },
-  validation: (rule: Rule) =>
-    rule.custom((value: AvailabilityTime) => {
-      const {from, to} = value ?? {}
+  validation: (rule) =>
+    rule.custom((value) => {
+      const {from, to} = (value as AvailabilityTime) ?? {}
 
       if (!from && !to) {
         return `Must contain both times`
       }
 
-      const fromIndex = hoursOfTheDay.indexOf(from)
-      const toIndex = hoursOfTheDay.indexOf(to)
+      const fromIndex = HOURS_OF_THE_DAY.indexOf(from)
+      const toIndex = HOURS_OF_THE_DAY.indexOf(to)
 
       if (fromIndex === -1 || toIndex === -1) {
         return `Time must be selected from the list`
@@ -37,14 +37,14 @@ export default defineField({
       name: 'from',
       type: 'string',
       options: {
-        list: hoursOfTheDay,
+        list: HOURS_OF_THE_DAY,
       },
     },
     {
       name: 'to',
       type: 'string',
       options: {
-        list: hoursOfTheDay,
+        list: HOURS_OF_THE_DAY,
       },
     },
   ],

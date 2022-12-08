@@ -1,16 +1,17 @@
-import {defineField, Path, Rule} from 'sanity'
+import {defineField, Path} from 'sanity'
 
 import Availability from '../components/Availability'
-import {daysOfTheWeek, defaultAvailabilityDays} from '../helpers/data'
+import {DAYS_OF_THE_WEEK} from '../helpers/data'
 import {AvailabilityDay} from '../helpers/types'
 
 export default defineField({
   name: 'availability',
   type: 'array',
-  components: {input: Availability},
-  // Bug in Studio currently gives these items the wrong keys, must be set at document level
-  // initialValue: defaultAvailabilityDays(),
-  validation: (rule: Rule) =>
+  components: {
+    // @ts-ignore
+    input: Availability,
+  },
+  validation: (rule) =>
     rule
       .min(7)
       .max(7)
@@ -21,7 +22,7 @@ export default defineField({
         }
 
         const outOfOrderDays = value.reduce((acc, row, rowIndex) => {
-          if (row.day === daysOfTheWeek[rowIndex]) {
+          if (row.day === DAYS_OF_THE_WEEK[rowIndex]) {
             return acc
           }
 

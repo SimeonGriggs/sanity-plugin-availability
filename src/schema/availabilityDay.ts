@@ -1,6 +1,6 @@
 import {defineField, Rule} from 'sanity'
 
-import {hoursOfTheDay, daysOfTheWeek} from '../helpers/data'
+import {HOURS_OF_THE_DAY, DAYS_OF_THE_WEEK} from '../helpers/data'
 import {AvailabilityTime} from '../helpers/types'
 
 export default defineField({
@@ -11,7 +11,7 @@ export default defineField({
       name: 'day',
       type: 'string',
       options: {
-        list: daysOfTheWeek,
+        list: DAYS_OF_THE_WEEK,
       },
     },
     {
@@ -22,8 +22,8 @@ export default defineField({
           if (!times?.length) return true
 
           const timesOrdered = times.map(({from, to}) => {
-            const fromIndex = hoursOfTheDay.indexOf(from)
-            const toIndex = hoursOfTheDay.indexOf(to)
+            const fromIndex = HOURS_OF_THE_DAY.indexOf(from)
+            const toIndex = HOURS_OF_THE_DAY.indexOf(to)
 
             return fromIndex + toIndex
           })

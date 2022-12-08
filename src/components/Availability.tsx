@@ -1,23 +1,21 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {Box, Card, Flex, Stack, Text, Switch, Label, Button, Code} from '@sanity/ui'
 import {AddIcon, RevertIcon} from '@sanity/icons'
-import {set, unset, setIfMissing, insert, FormFieldValidationStatus} from 'sanity/form'
+import {set, unset, setIfMissing, insert, FormFieldValidationStatus} from 'sanity'
 
 import {getValidationTone} from '../helpers/getValidationTone'
-
 import {
-  daysOfTheWeek,
+  DAYS_OF_THE_WEEK,
   defaultAvailabilityTimes,
-  hoursOfTheDay,
+  HOURS_OF_THE_DAY,
   defaultAvailabilityDays,
 } from '../helpers/data'
 import {AvailabilityProps, AvailabilityTime, AvailabilityTimeKey, DayKey} from '../helpers/types'
-
 import AvailableToggle from './AvailableToggle'
 import Times from './Times'
 
-const weekdays = daysOfTheWeek.slice(0, 5).map((day) => day.toLowerCase())
-const weekendDays = daysOfTheWeek.slice(5).map((day) => day.toLowerCase())
+const WEEKDAYS = DAYS_OF_THE_WEEK.slice(0, 5).map((day) => day.toLowerCase())
+const WEEKEND_DAYS = DAYS_OF_THE_WEEK.slice(5).map((day) => day.toLowerCase())
 
 let hasValue = false
 
@@ -35,13 +33,13 @@ export default function Availability(props: AvailabilityProps) {
 
       const allWeekdayTimeStrings = value?.length
         ? value
-            .filter((day) => weekdays.includes(day._key))
+            .filter((day) => WEEKDAYS.includes(day._key))
             .map((day) => day.availableTimes)
             .flat()
             .map((time) => `${time?.from}-${time?.to}`)
         : []
       const allWeekdaysAreSynced =
-        allWeekdayTimeStrings.length >= weekdays.length &&
+        allWeekdayTimeStrings.length >= WEEKDAYS.length &&
         allWeekdayTimeStrings.every((v) => v === allWeekdayTimeStrings[0])
 
       if (allWeekdaysAreSynced) {
@@ -50,13 +48,13 @@ export default function Availability(props: AvailabilityProps) {
 
       const allWeekendTimeStrings = value?.length
         ? value
-            .filter((day) => weekendDays.includes(day._key))
+            .filter((day) => WEEKEND_DAYS.includes(day._key))
             .map((day) => day.availableTimes)
             .flat()
             .map((time) => `${time?.from}-${time?.to}`)
         : []
       const allWeekendDaysAreSynced =
-        allWeekendTimeStrings.length >= weekendDays.length &&
+        allWeekendTimeStrings.length >= WEEKEND_DAYS.length &&
         allWeekendTimeStrings.every((v) => v === allWeekendTimeStrings[0])
 
       if (allWeekendDaysAreSynced) {
@@ -68,8 +66,8 @@ export default function Availability(props: AvailabilityProps) {
   // Should this function sync to multiple days?
   const shouldSyncPatch = useCallback(
     (dayKey: string) =>
-      (syncWeekdays && weekdays.includes(dayKey)) ||
-      (syncWeekendDays && weekendDays.includes(dayKey)),
+      (syncWeekdays && WEEKDAYS.includes(dayKey)) ||
+      (syncWeekendDays && WEEKEND_DAYS.includes(dayKey)),
     [syncWeekdays, syncWeekendDays]
   )
 
@@ -77,12 +75,11 @@ export default function Availability(props: AvailabilityProps) {
   const syncedPatch = useCallback(
     (updatedAvailabilityTimes: AvailabilityTime[], clickedDayKey: DayKey) => {
       // Create array of patches for synced days
-      const syncedPatches = daysOfTheWeek
-        .map((day) => day.toLowerCase() as DayKey)
-        .reduce((allPatches: any[], dayKey) => {
+      const syncedPatches = DAYS_OF_THE_WEEK.map((day) => day.toLowerCase() as DayKey).reduce(
+        (allPatches: any[], dayKey) => {
           const path = [{_key: dayKey}, `availableTimes`]
 
-          if (syncWeekdays && weekdays.includes(dayKey) && weekdays.includes(clickedDayKey)) {
+          if (syncWeekdays && WEEKDAYS.includes(dayKey) && WEEKDAYS.includes(clickedDayKey)) {
             return updatedAvailabilityTimes?.length
               ? [setIfMissing([], path), set(updatedAvailabilityTimes, path), ...allPatches]
               : [unset(path), ...allPatches]
@@ -90,8 +87,8 @@ export default function Availability(props: AvailabilityProps) {
 
           if (
             syncWeekendDays &&
-            weekendDays.includes(dayKey) &&
-            weekendDays.includes(clickedDayKey)
+            WEEKEND_DAYS.includes(dayKey) &&
+            WEEKEND_DAYS.includes(clickedDayKey)
           ) {
             return updatedAvailabilityTimes.length
               ? [setIfMissing([], path), set(updatedAvailabilityTimes, path), ...allPatches]
@@ -99,7 +96,9 @@ export default function Availability(props: AvailabilityProps) {
           }
 
           return allPatches
-        }, [])
+        },
+        []
+      )
 
       if (!syncedPatches.length) {
         return null
@@ -129,7 +128,7 @@ export default function Availability(props: AvailabilityProps) {
 
       return syncedPatch(updatedAvailabilityTimes, dayKey)
     },
-    [shouldSyncPatch, syncedPatch]
+    [shouldSyncPatch, syncedPatch, onChange]
   )
 
   const handleUpdateTime = useCallback(
@@ -178,7 +177,7 @@ export default function Availability(props: AvailabilityProps) {
 
       return syncedPatch(updatedAvailabilityTimes, dayKey)
     },
-    [value, onChange, shouldSyncPatch]
+    [value, onChange, shouldSyncPatch, syncedPatch]
   )
 
   const handleAddTime = useCallback(
@@ -188,12 +187,12 @@ export default function Availability(props: AvailabilityProps) {
       let nextTimes = {...defaultAvailabilityTimes()[0]}
 
       if (prevTimes?.from && prevTimes?.to) {
-        const nextIndex = hoursOfTheDay.indexOf(prevTimes.to) + 1
+        const nextIndex = HOURS_OF_THE_DAY.indexOf(prevTimes.to) + 1
 
         nextTimes = {
           ...nextTimes,
-          from: hoursOfTheDay[nextIndex],
-          to: hoursOfTheDay[nextIndex + 1],
+          from: HOURS_OF_THE_DAY[nextIndex],
+          to: HOURS_OF_THE_DAY[nextIndex + 1],
         }
       }
 
@@ -223,125 +222,126 @@ export default function Availability(props: AvailabilityProps) {
   return (
     <Stack space={[2, 2, 2, 1]}>
       {members?.length > 0
-        ? members.map((dayMember, dayMemberIndex) => (
-            <React.Fragment key={dayMember.key}>
-              {dayMember.key === `monday` ? (
-                <Flex align="center" gap={3} paddingY={2}>
-                  <Card flex={1} borderBottom />
-                  <Label>Sync Weekdays</Label>
-                  <Switch
-                    disabled={readOnly}
-                    checked={syncWeekdays}
-                    onChange={() => setSyncWeekdays(!syncWeekdays)}
-                  />
-                </Flex>
-              ) : null}
-              {dayMember.key === `saturday` ? (
-                <Flex align="center" gap={3} paddingY={2}>
-                  <Card flex={1} borderBottom />
-                  <Label>Sync Weekend</Label>
-                  <Switch
-                    disabled={readOnly}
-                    checked={syncWeekendDays}
-                    onChange={() => setSyncWeekendDays(!syncWeekendDays)}
-                  />
-                </Flex>
-              ) : null}
-              <Card radius={2} padding={2} tone={getValidationTone(dayMember)}>
-                <Flex align="center" gap={3}>
-                  <Flex
-                    direction={[`column-reverse`, `column-reverse`, `column-reverse`, `row`]}
-                    gap={[3, 3, 3, 0]}
-                    align={[`flex-start`, `flex-start`, `flex-start`, `center`]}
-                  >
-                    {value && value[dayMemberIndex] ? (
-                      <AvailableToggle
-                        readOnly={readOnly}
-                        value={value[dayMemberIndex]}
-                        handleToggle={handleToggle}
-                      />
-                    ) : null}
+        ? members.map((dayMember, dayMemberIndex) => {
+            if (dayMember.kind === 'error') {
+              return (
+                <Card key={dayMember.key} tone="critical" flex={1}>
+                  <Code size={1}>{dayMember.error.type}</Code>
+                </Card>
+              )
+            }
 
-                    {dayMember?.item?.validation?.length > 0 ? (
-                      <FormFieldValidationStatus validation={dayMember.item.validation} />
-                    ) : null}
+            return (
+              <React.Fragment key={dayMember.key}>
+                {dayMember.key === `monday` ? (
+                  <Flex align="center" gap={3} paddingY={2}>
+                    <Card flex={1} borderBottom />
+                    <Label>Sync Weekdays</Label>
+                    <Switch
+                      disabled={readOnly}
+                      checked={syncWeekdays}
+                      onChange={() => setSyncWeekdays(!syncWeekdays)}
+                    />
                   </Flex>
+                ) : null}
+                {dayMember.key === `saturday` ? (
+                  <Flex align="center" gap={3} paddingY={2}>
+                    <Card flex={1} borderBottom />
+                    <Label>Sync Weekend</Label>
+                    <Switch
+                      disabled={readOnly}
+                      checked={syncWeekendDays}
+                      onChange={() => setSyncWeekendDays(!syncWeekendDays)}
+                    />
+                  </Flex>
+                ) : null}
+                <Card radius={2} padding={2} tone={getValidationTone(dayMember)}>
+                  <Flex align="center" gap={3}>
+                    <Flex
+                      direction={[`column-reverse`, `column-reverse`, `column-reverse`, `row`]}
+                      gap={[3, 3, 3, 0]}
+                      align={[`flex-start`, `flex-start`, `flex-start`, `center`]}
+                    >
+                      {value && value[dayMemberIndex] ? (
+                        <AvailableToggle
+                          readOnly={readOnly}
+                          value={value[dayMemberIndex]}
+                          handleToggle={handleToggle}
+                        />
+                      ) : null}
 
-                  {/* TODO: Resolve this Type issue */}
-                  {/* @ts-ignore */}
-                  {dayMember.kind === `error` ? (
-                    <Card tone="critical" flex={1}>
-                      {/* @ts-ignore */}
-                      <Code size={1}>{dayMember.error.type}</Code>
-                    </Card>
-                  ) : null}
+                      {dayMember?.item?.validation?.length > 0 ? (
+                        <FormFieldValidationStatus validation={dayMember.item.validation} />
+                      ) : null}
+                    </Flex>
 
-                  {dayMember?.item?.members?.length > 0 ? (
-                    <Stack flex={1} space={2}>
-                      {dayMember.item.members
-                        // TODO: Resolve this Type issue
-                        // @ts-ignore
-                        .filter((timeMember) => timeMember.name === 'availableTimes')
-                        .map((timeMember) => {
-                          switch (timeMember.kind) {
-                            // @ts-ignore
-                            case 'error':
-                              return (
-                                <Card tone="critical" flex={1}>
-                                  {/* @ts-ignore */}
-                                  <Code size={1}>{dayMember.error.type}</Code>
-                                </Card>
-                              )
-                            case 'field':
-                              return (
-                                <Flex
-                                  key={timeMember.key}
-                                  gap={2}
-                                  flex={1}
-                                  justify="flex-end"
-                                  align="center"
-                                >
-                                  {/* @ts-ignore */}
-                                  {timeMember.field.members?.length > 0 ? (
-                                    <Times
-                                      // @ts-ignore
-                                      members={timeMember.field.members}
-                                      readOnly={typeof readOnly === 'boolean' ? readOnly : false}
-                                      dayKey={dayMember.key as DayKey}
-                                      handleUpdateTime={handleUpdateTime}
-                                      handleDeleteTime={handleDeleteTime}
-                                    />
-                                  ) : (
-                                    <Box paddingRight={2}>
-                                      <Text size={1} muted>
-                                        Unavailable
-                                      </Text>
-                                    </Box>
-                                  )}
-                                </Flex>
-                              )
-                            default:
-                              return null
-                          }
-                        })}
-                    </Stack>
-                  ) : (
-                    <Box flex={1} />
-                  )}
+                    {dayMember?.item?.members?.length > 0 ? (
+                      <Stack flex={1} space={2}>
+                        {dayMember.item.members
+                          // TODO: Resolve this Type issue
+                          // @ts-ignore
+                          .filter((timeMember) => timeMember.name === 'availableTimes')
+                          .map((timeMember) => {
+                            switch (timeMember.kind) {
+                              // @ts-ignore
+                              case 'error':
+                                return (
+                                  <Card tone="critical" flex={1}>
+                                    {/* @ts-ignore */}
+                                    <Code size={1}>{dayMember.error.type}</Code>
+                                  </Card>
+                                )
+                              case 'field':
+                                return (
+                                  <Flex
+                                    key={timeMember.key}
+                                    gap={2}
+                                    flex={1}
+                                    justify="flex-end"
+                                    align="center"
+                                  >
+                                    {/* @ts-ignore */}
+                                    {timeMember.field.members?.length > 0 ? (
+                                      <Times
+                                        // @ts-ignore
+                                        members={timeMember.field.members}
+                                        readOnly={typeof readOnly === 'boolean' ? readOnly : false}
+                                        dayKey={dayMember.key as DayKey}
+                                        handleUpdateTime={handleUpdateTime}
+                                        handleDeleteTime={handleDeleteTime}
+                                      />
+                                    ) : (
+                                      <Box paddingRight={2}>
+                                        <Text size={1} muted>
+                                          Unavailable
+                                        </Text>
+                                      </Box>
+                                    )}
+                                  </Flex>
+                                )
+                              default:
+                                return null
+                            }
+                          })}
+                      </Stack>
+                    ) : (
+                      <Box flex={1} />
+                    )}
 
-                  <Button
-                    onClick={() => handleAddTime(dayMember.key as DayKey)}
-                    aria-label="Add Hours"
-                    icon={AddIcon}
-                    tone="primary"
-                    padding={2}
-                    fontSize={1}
-                    disabled={readOnly}
-                  />
-                </Flex>
-              </Card>
-            </React.Fragment>
-          ))
+                    <Button
+                      onClick={() => handleAddTime(dayMember.key as DayKey)}
+                      aria-label="Add Hours"
+                      icon={AddIcon}
+                      tone="primary"
+                      padding={2}
+                      fontSize={1}
+                      disabled={readOnly}
+                    />
+                  </Flex>
+                </Card>
+              </React.Fragment>
+            )
+          })
         : null}
 
       <Button
