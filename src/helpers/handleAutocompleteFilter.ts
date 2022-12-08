@@ -2,7 +2,7 @@ type Option = {
   value: string
 }
 
-export const handleAutocompleteFilter = (query: string, option: Option) => {
+export const handleAutocompleteFilter = (query: string, option: Option): boolean => {
   // Return a search for `1.15` as `1:15`
   const queryFuzzy = query.includes(`.`) ? query.replace(`.`, `:`) : query
   const queryUpper = queryFuzzy.toUpperCase()
