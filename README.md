@@ -1,10 +1,8 @@
-> This is a **Sanity Studio v3** plugin.
-
 # sanity-plugin-availability
 
 Studio v3 exclusive Schema and Custom Input to indicate and rapidly author availability data.
 
-![Custom input component showing days of the week and available times](./img/availability.png)
+![Custom input component showing days of the week and available times](https://raw.githubusercontent.com/SimeonGriggs/sanity-plugin-availability/main/img/availability.png)
 
 ## Installation
 
