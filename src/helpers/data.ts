@@ -2,7 +2,7 @@ import {randomKey} from '@sanity/util/content'
 
 import {AvailabilityDay, AvailabilityTime, Day, DayKey} from './types'
 
-export const daysOfTheWeek: Day[] = [
+export const DAYS_OF_THE_WEEK: Day[] = [
   'Monday',
   'Tuesday',
   'Wednesday',
@@ -22,7 +22,7 @@ export const dayKeysOfTheWeek: DayKey[] = [
   'sunday',
 ]
 
-export const hoursOfTheDay = [
+export const HOURS_OF_THE_DAY = [
   `12:00 AM`,
   `12:15 AM`,
   `12:30 AM`,
@@ -125,13 +125,13 @@ export const defaultAvailabilityTimes = (): AvailabilityTime[] => [
   {
     _type: 'availabilityDuration',
     _key: randomKey(12),
-    from: hoursOfTheDay[36], // 9:00 AM
-    to: hoursOfTheDay[68], // 5:00 PM
+    from: HOURS_OF_THE_DAY[36], // 9:00 AM
+    to: HOURS_OF_THE_DAY[68], // 5:00 PM
   },
 ]
 
 export const defaultAvailabilityDays = (): AvailabilityDay[] =>
-  daysOfTheWeek.map((day, dayIndex) => ({
+  DAYS_OF_THE_WEEK.map((day, dayIndex) => ({
     _type: 'availabilityDay',
     _key: dayKeysOfTheWeek[dayIndex],
     day,

@@ -1,5 +1,5 @@
 import {CardTone} from '@sanity/ui'
-import {ArrayOfObjectsMember} from 'sanity/form'
+import {ArrayOfObjectsMember} from 'sanity'
 
 export function getValidationTone(member: ArrayOfObjectsMember): CardTone | undefined {
   // @ts-ignore

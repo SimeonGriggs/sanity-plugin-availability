@@ -1,5 +1,5 @@
 import {ArraySchemaType} from 'sanity'
-import {ArrayOfObjectsInputProps} from 'sanity/form'
+import {ArrayOfObjectsInputProps} from 'sanity'
 
 export type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday'
 
