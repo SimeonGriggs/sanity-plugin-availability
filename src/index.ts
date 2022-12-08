@@ -1,5 +1,4 @@
-import {createPlugin} from 'sanity'
-import {defaultAvailabilityDays} from './helpers/data'
+import {definePlugin} from 'sanity'
 
 import availabilitySchema from './schema/availability'
 import availabilityDay from './schema/availabilityDay'
@@ -10,7 +9,7 @@ interface PluginConfig {
   /* nothing here yet */
 }
 
-export const availability = createPlugin<PluginConfig | void>((config = {}) => {
+export const availability = definePlugin<PluginConfig | void>((config = {}) => {
   return {
     name: 'sanity-plugin-availability',
     schema: {

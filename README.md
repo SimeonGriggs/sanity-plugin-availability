@@ -23,10 +23,12 @@ yarn add sanity-plugin-availability
 Add it as a plugin in sanity.config.ts (or .js):
 
 ```ts
- import {createConfig} from 'sanity'
+// ./sanity.config.ts
+
+ import {defineConfig} from 'sanity'
  import {availability} from 'sanity-plugin-availability'
 
- export const createConfig({
+ export const defineConfig({
   // all other settings...
   plugins: [
     availability()
