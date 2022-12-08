@@ -1,5 +1,3 @@
-> This is a **Sanity Studio v3** plugin.
-
 # sanity-plugin-availability
 
 Studio v3 exclusive Schema and Custom Input to indicate and rapidly author availability data.
