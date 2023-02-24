@@ -1,6 +1,6 @@
 {
   "name": "sanity-plugin-availability",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Studio v3 exclusive Schema and Custom Input to indicate and rapidly author availability data",
   "keywords": [
     "sanity",
