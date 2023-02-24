@@ -5,6 +5,7 @@ import {AvailabilityTime} from '../helpers/types'
 
 export default defineField({
   name: 'availabilityDay',
+  title: 'Day',
   type: 'object',
   fields: [
     {
