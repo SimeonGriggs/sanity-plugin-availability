@@ -6,6 +6,7 @@ import {AvailabilityDay} from '../helpers/types'
 
 export default defineField({
   name: 'availability',
+  title: 'Availability',
   type: 'array',
   components: {
     // @ts-ignore

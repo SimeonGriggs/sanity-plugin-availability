@@ -29,6 +29,7 @@ Add it as a plugin in sanity.config.ts (or .js):
  export const defineConfig({
   // all other settings...
   plugins: [
+    // all other plugins...
     availability()
   ]
  })

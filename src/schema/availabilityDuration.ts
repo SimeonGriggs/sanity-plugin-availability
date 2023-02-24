@@ -5,6 +5,7 @@ import {AvailabilityTime} from '../helpers/types'
 
 export default defineField({
   name: 'availabilityDuration',
+  title: 'Duration',
   type: 'object',
   options: {columns: 2},
   initialValue: {
